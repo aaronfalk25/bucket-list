@@ -1,75 +1,66 @@
 import {auth, provider} from 'src/api/firebase/firebase';
 import {signInWithPopup} from "firebase/auth";
 import { User } from 'src/interfaces/schema';
-import { writeToCloudFireStore, updateIdInCloudFireStore } from 'src/api/firebase/firebase';
+import { writeToCloudFireStore  } from 'src/api/firebase/firebase';
 import { signOut } from 'firebase/auth';
+import {who} from 'src/utilities/queries';
 
 export async function SignIn() {
-    let email: string = '';
-    let displayName: string = '';
-
-    await signInWithPopup(auth, provider).then((data) => {
-
-                email = data.user.email ? data.user.email : ''
-                displayName = data.user.displayName ? data.user.displayName : ''
-              
-            });
+    await signInWithPopup(auth, provider); // Sign in with Google
     
-            window.localStorage.setItem('email', email);
-            window.localStorage.setItem('displayName', displayName);
-
-            const user: User = {
-                uid: auth.currentUser?.uid ? auth.currentUser?.uid : '',
-                email: auth.currentUser?.email ? auth.currentUser?.email : '',
-                displayName: auth.currentUser?.displayName ? auth.currentUser?.displayName : '',
-                firstName: '',
-                lastName: '',
-                darkMode: false,
-                isSignedIn: true
-            }
-            writeToCloudFireStore('users', user, user.uid);
-            updateIdInCloudFireStore('users', user, user.uid);
-
-            window.location.reload();
-}
-
-export function SignOut() {
-    window.localStorage.removeItem('email');
-    window.localStorage.removeItem('displayName');
-
+    // Make user object
     const user: User = {
         uid: auth.currentUser?.uid ? auth.currentUser?.uid : '',
         email: auth.currentUser?.email ? auth.currentUser?.email : '',
         displayName: auth.currentUser?.displayName ? auth.currentUser?.displayName : '',
-        firstName: '',
-        lastName: 'TEST',
+        firstName: auth.currentUser?.displayName ? auth.currentUser?.displayName.split(' ')[0] : '',
+        lastName: auth.currentUser?.displayName ? auth.currentUser?.displayName.split(' ')[1] : '',
         darkMode: false,
+        isSignedIn: true
+    }
+
+    // Write user object to firestore (user storage)
+    writeToCloudFireStore('users', user, user.uid);
+}
+
+export async function SignOut() {
+    const whoUser = await who();
+
+    if (whoUser.uid === "00000000000000000000000000000000") {
+      throw new Error("User not found");
+    }
+
+    const user: User = {
+        uid: whoUser.uid,
+        email: whoUser?.email,
+        displayName: whoUser?.displayName,
+        firstName: whoUser?.firstName,
+        lastName: whoUser?.lastName,
+        darkMode: whoUser?.darkMode,
         isSignedIn: false
     }
     if (user.uid !== '') {
         writeToCloudFireStore('users', user, user.uid);
-        updateIdInCloudFireStore('users', user, user.uid);
-        console.log("Wrote to firestore")
     }
 
     signOut(auth)
     .then(() => {
       // Handle successful sign-out
       console.log('User signed out successfully');
-      // Perform any additional actions or state updates
     })
     .catch((error) => {
       // Handle sign-out error
       console.error('Error signing out:', error);
     });
-
-    // window.location.reload();
 }
 
-export const isLoggedIn = () => {
-    if (typeof window !== 'undefined') {
-      const email = localStorage.getItem('email');
-      return !!email;
-    }
-    return false; // Default to not logged in if executed on the server-side
-  };
+
+import { getAuth, User as FBUser } from 'firebase/auth';
+
+export const isLoggedIn = (): boolean => {
+  const auth = getAuth();
+  const user: FBUser | null = auth.currentUser;
+  
+  console.log(`is logged in: ${!!user}`)
+  return !!user;
+};

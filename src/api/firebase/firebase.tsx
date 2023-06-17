@@ -35,9 +35,9 @@ export async function updateIdInCloudFireStore(collection_name: string, contents
     }
 }
 
-// Generic read entire collection like a select * returns the entire collection
+// Generic read entire collection
 import { getDocs } from "firebase/firestore";
-import { _Collection, Document } from "src/interfaces/firestore";
+import { Collection as _Collection, Document } from "src/interfaces/firestore";
 export async function readFromCloudFireStore(collection_name: string): Promise<_Collection> {
     const querySnapshot = await getDocs(collection(db, collection_name));
 

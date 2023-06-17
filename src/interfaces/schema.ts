@@ -5,7 +5,7 @@ export interface User {
     firstName?: string;
     lastName?: string;
     darkMode: boolean;
-    isSignedIn?: boolean;
+    isSignedIn: boolean;
 }
 
 export interface BucketItem {

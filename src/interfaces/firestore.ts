@@ -3,7 +3,7 @@ export interface Document {
     [key: string]: unknown;
 }
 
-export interface _Collection {
+export interface Collection {
     name: string
     documents: Document[];
 }
