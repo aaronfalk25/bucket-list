@@ -9,8 +9,10 @@ export interface User {
 }
 
 export interface BucketItem {
+    id: string;
     name: string;
     description: string;
-    type: string;
-    date: string;
+    date?: string;
+    likes: number;
+    likedBy: User[];
 }
