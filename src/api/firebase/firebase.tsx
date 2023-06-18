@@ -17,7 +17,6 @@ export async function writeToCloudFireStore(collection_name: string, contents: a
     try {
         const docRef = doc(collection(db, collection_name), doc_id);
         await setDoc(docRef, contents);
-        console.log("Document written with ID: ", docRef.id);
     } catch (e) {
         console.error("Error adding document: ", e);
     }
@@ -29,7 +28,6 @@ export async function updateIdInCloudFireStore(collection_name: string, contents
     try {
         const docRef = doc(collection(db, collection_name), doc_id);
         await updateDoc(docRef, contents);
-        console.log("Document updated with ID: ", docRef.id);
     } catch (e) {
         console.error("Error updating document: ", e);
     }
@@ -56,5 +54,16 @@ export async function readFromCloudFireStore(collection_name: string): Promise<_
         resCollection.documents.push(document);
     });
 
+    console.log(resCollection)
     return resCollection;
+}
+
+// Delete document from firestore
+import { deleteDoc } from "firebase/firestore";
+export async function deleteFromCloudFireStore(collection_name: string, doc_id: string) {
+    try {
+        await deleteDoc(doc(db, collection_name, doc_id));
+    } catch (e) {
+        console.error("Error deleting document: ", e);
+    }
 }

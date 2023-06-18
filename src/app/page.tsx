@@ -23,7 +23,6 @@ export default function Home() {
     const fetchWhoUser = async () => {
       const user = await getWhoUser();
       setUser(user);
-      console.log(user);
     };
   
     fetchWhoUser();

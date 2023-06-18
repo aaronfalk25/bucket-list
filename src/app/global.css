@@ -83,3 +83,28 @@ html, body {
   .button-alt:hover {
     background-color: #B8860B;
   }
+
+
+  .bucket_item_container {
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+    background-color: white;
+    margin: 20px;
+  }
+  
+  .bucket_item_container:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #f8f8f8;
+  }
+  
+  .bucket_item_title {
+    color: blue;
+  }
+
+  .bucket_item_box {
+    background-color: #99b3db;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 16px;
+  }

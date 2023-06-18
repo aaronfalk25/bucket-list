@@ -18,12 +18,11 @@ export async function who(): Promise<User> {
   if (userid !== undefined) {
   
     for (const usr of users.documents) {
-        if (usr.id === userid) {
+        if (usr.uid === userid) {
           user = usr as unknown as User;
         }
     }
   }
 
-  console.log(user)
   return user;
 }

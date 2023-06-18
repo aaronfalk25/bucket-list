@@ -44,10 +44,10 @@ export async function SignOut() {
     }
 
     signOut(auth)
-    .then(() => {
-      // Handle successful sign-out
-      console.log('User signed out successfully');
-    })
+    // .then(() => {
+    //   // Handle successful sign-out
+    //   console.log('User signed out successfully');
+    // })
     .catch((error) => {
       // Handle sign-out error
       console.error('Error signing out:', error);
@@ -60,7 +60,5 @@ import { getAuth, User as FBUser } from 'firebase/auth';
 export const isLoggedIn = (): boolean => {
   const auth = getAuth();
   const user: FBUser | null = auth.currentUser;
-  
-  console.log(`is logged in: ${!!user}`)
   return !!user;
 };
