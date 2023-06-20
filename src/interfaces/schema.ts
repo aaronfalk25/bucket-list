@@ -13,6 +13,8 @@ export interface BucketItem {
     name: string;
     description: string;
     date?: string;
+    time?: string;
+    cost?: string;
     likes: number;
-    likedBy: User[];
+    likedBy: string[];
 }

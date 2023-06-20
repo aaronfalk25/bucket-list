@@ -1,4 +1,4 @@
-/* Reset default browser styles */
+* Reset default browser styles */
 html, body {
     margin: 0;
     padding: 0;
@@ -103,8 +103,34 @@ html, body {
   }
 
   .bucket_item_box {
-    background-color: #99b3db;
     border-radius: 8px;
     padding: 16px;
-    margin: 16px 16px;
+    width: 60%;
+    margin: 0 auto;
+    background: linear-gradient(to top right, #87cefa, #4169e1);
+  }
+
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .bucket_item_box:hover {
+    background: linear-gradient(to top right, #87cefa, #4169e1);
+    background-size: 200% 200%;
+    animation: gradientAnimation 4s ease infinite;
+  }
+
+  .bucket_item_container_inner_box {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 10px;
   }
