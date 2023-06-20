@@ -15,6 +15,7 @@ export interface BucketItem {
     date?: string;
     time?: string;
     cost?: string;
+    // TODO: Add # people
     likes: number;
     likedBy: string[];
 }

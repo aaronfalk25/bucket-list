@@ -2,30 +2,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+This is a summer project of mine that I am making to learn how to integrate NextJS with Google Firebase. This is a WIP "bucket list," where my friends can login and add their ideas to a board that shows what events will be happening.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+The plan for this project is to eventually get it to the point where users can be added by an admin to a group, where if they are a member in that group, they can post and interact with the board. Right now, my aim is to make a "global board" and worry about groups and roles later.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# Keeping this bit down here for my own reference later...
 
 ## Deploy on Vercel
 
