@@ -134,3 +134,25 @@ html, body {
     align-items: center;
     margin-top: 10px;
   }
+
+  .bucket_item_icons_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .bucket_item_icons_container_inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 10px;
+  }
+
+  .spacer {
+    margin: 0 25px;
+  }
+
+  .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }

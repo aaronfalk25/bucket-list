@@ -1,6 +1,8 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
 import { BucketItem } from "src/interfaces/schema";
 import { v4 as uuidv4 } from "uuid";
+import {PencilIcon, TrashIcon, PlusIcon, HeartIcon, UndoIcon, SaveIcon } from "@/components/icons";
+
 import "src/app/global.css";
 import {
   writeToCloudFireStore,
@@ -181,8 +183,14 @@ resetNewBucketItem = () => {
         <div>
           {isEditing ? (
             <div>
-              <button onClick={this.handleSave}>Save</button>
-              <button onClick={this.handleCancel}>Cancel</button>
+              <div className="bucket_item_icons_container">
+                <div className="bucket_item_icons_container_inner">
+                  <button onClick={this.handleSave}><SaveIcon/></button>
+                  <div className="spacer"/>
+                  <button onClick={this.handleCancel}><UndoIcon/></button>
+                </div>
+              <button><HeartIcon/></button>
+              </div>
               <div>
                 <input
                   type="text"
@@ -232,8 +240,16 @@ resetNewBucketItem = () => {
             </div>
           ) : (
             <div>
-              <button onClick={this.handleEdit}>Edit</button>
-              {this.props.id === 'new' ? <button onClick={this.insertNewBucketItem}>Add</button> : <button onClick={this.deleteBucketItem}>Delete</button>}
+              <div className="bucket_item_icons_container">
+                <div className="bucket_item_icons_container_inner"> 
+                  <button onClick={this.handleEdit}><PencilIcon /></button>
+                  <div className="spacer"/>
+                  {this.props.id === 'new' 
+                    ? <button onClick={this.insertNewBucketItem}><PlusIcon/></button> 
+                    : <button onClick={this.deleteBucketItem}><TrashIcon/></button>}
+                </div>
+                <button><HeartIcon/></button>
+              </div>
               <h3>{editedName}</h3>
               <p>{editedDescription}</p>
               <div className="bucket_item_container_inner_box">
