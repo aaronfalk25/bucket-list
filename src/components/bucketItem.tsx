@@ -2,6 +2,7 @@ import React, { ChangeEvent, KeyboardEvent } from "react";
 import { BucketItem } from "src/interfaces/schema";
 import { v4 as uuidv4 } from "uuid";
 import {PencilIcon, TrashIcon, PlusIcon, HeartIcon, UndoIcon, SaveIcon } from "@/components/icons";
+import { who } from "src/utilities/queries";
 
 import "src/app/global.css";
 import {
@@ -15,6 +16,7 @@ interface Props extends BucketItem {
     updateBucketItem: (updatedItem: BucketItem) => Promise<void>;
     deleteBucketItem?: (id: string) => void;
     insertNewBucketItem?: (newItem: BucketItem) => Promise<void>;
+    likeBucketItem?: (bucketId: string, userId: string) => Promise<void>;
   }
 
 interface State {
@@ -24,6 +26,8 @@ interface State {
     editedDate: string;
     editedTime: string;
     editedCost: string;
+    editedNumParticipants: number;
+    userId: string | null;
 }
 
 export class BucketItemComponent extends React.Component<Props, State> {
@@ -36,12 +40,23 @@ export class BucketItemComponent extends React.Component<Props, State> {
       editedDate: props.date? props.date : "",
       editedTime: props.time? props.time : "",
       editedCost: props.cost? props.cost : "",
+      editedNumParticipants: props.numParticipants? props.numParticipants : 0,
+      userId: null
     };
     this.resetNewBucketItem = this.resetNewBucketItem.bind(this);
   }
 
+  componentDidMount() {
+    this.fetchUserId();
+  }
+
+  fetchUserId = async () => {
+    const user = await who();
+    this.setState({ userId: user.uid });
+  };
+
   editBucketItem = async () => {
-    const { editedName, editedDescription, editedDate, editedTime, editedCost } = this.state;
+    const { editedName, editedDescription, editedDate, editedTime, editedCost, editedNumParticipants } = this.state;
     await updateIdInCloudFireStore(
       "bucketItems",
       {
@@ -50,7 +65,11 @@ export class BucketItemComponent extends React.Component<Props, State> {
         date: this.props.date? this.props.date : "",
         time: this.props.time? this.props.time : "",
         cost: this.props.cost? this.props.cost : "",
+        numParticipants: this.props.numParticipants? this.props.numParticipants : 0,
+        participants: [],
         likes: 0,
+        likedBy: [],
+        createdBy: this.props.createdBy? this.props.createdBy : ""
       },
       this.props.id
     );
@@ -62,9 +81,12 @@ export class BucketItemComponent extends React.Component<Props, State> {
             description: editedDescription,
             date: editedDate,
             time: editedTime,
+            numParticipants: editedNumParticipants,
+            participants: [],
             cost: editedCost,
             likes: 0,
-            likedBy: []
+            likedBy: [],
+            createdBy: this.props.createdBy? this.props.createdBy : ""
         });
     }
   };
@@ -74,6 +96,8 @@ export class BucketItemComponent extends React.Component<Props, State> {
   };
 
   insertNewBucketItem = async () => {
+    const user = await who();
+    const userid = user.uid;
     const today: Date = new Date();
     const formattedToday = today.toLocaleDateString("en-US", {
         month: "2-digit",
@@ -84,9 +108,14 @@ export class BucketItemComponent extends React.Component<Props, State> {
         id: uuidv4(),
         name: this.state.editedName,
         description: this.state.editedDescription,
-        date: formattedToday,
+        date: this.state.editedDate ? this.state.editedDate : formattedToday,
+        time: this.state.editedTime,
+        cost: this.state.editedCost,
+        numParticipants: this.state.editedNumParticipants,
+        participants: [],
         likes: 0,
-        likedBy: []
+        likedBy: [],
+        createdBy: userid
     });
 
     this.resetNewBucketItem();
@@ -176,8 +205,14 @@ resetNewBucketItem = () => {
     }
   };
 
+  handleLike = async () => {
+    const user = await who();
+    const userid = user.uid;
+    if (this.props.likeBucketItem) this.props.likeBucketItem(this.props.id ,userid);
+  };
+
   render() {
-    const { isEditing, editedName, editedDescription, editedDate, editedTime, editedCost } = this.state;
+    const { isEditing, editedName, editedDescription, editedDate, editedTime, editedCost, userId } = this.state;
 
     return (
         <div>
@@ -189,7 +224,7 @@ resetNewBucketItem = () => {
                   <div className="spacer"/>
                   <button onClick={this.handleCancel}><UndoIcon/></button>
                 </div>
-              <button><HeartIcon/></button>
+                <div className="spacer"/>
               </div>
               <div>
                 <input
@@ -248,7 +283,17 @@ resetNewBucketItem = () => {
                     ? <button onClick={this.insertNewBucketItem}><PlusIcon/></button> 
                     : <button onClick={this.deleteBucketItem}><TrashIcon/></button>}
                 </div>
-                <button><HeartIcon/></button>
+                <div> 
+                  {
+                  this.props.id !== 'new'
+                  ? userId && this.props.likedBy.includes(userId)
+                    ? <button className="hide-button-border heart-icon-liked" onClick={this.handleLike}><HeartIcon/> </button>
+                    : <button className="hide-button-border heart-icon" onClick={this.handleLike}> <HeartIcon/> </button>
+                  : <div></div>
+                  }
+                
+                {this.props.id !== 'new' ? this.props.likes : <div></div>}
+                </div>
               </div>
               <h3>{editedName}</h3>
               <p>{editedDescription}</p>

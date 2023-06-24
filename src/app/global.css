@@ -156,3 +156,24 @@ html, body {
     width: 1.5rem;
     height: 1.5rem;
   }
+
+  .hide-button-border {
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+  }
+
+  .heart-icon:hover svg {
+    fill: red;
+  }
+
+  .heart-icon-liked svg {
+    fill: red;
+  }
+
+  .heart-icon-liked:hover svg {
+    fill: white;
+  }
+  

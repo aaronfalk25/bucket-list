@@ -31,6 +31,7 @@ export default function Events() {
                 {...bucketItem}
                 updateBucketItem={updateBucketItem}
                 deleteBucketItem={deleteBucketItem}
+                likeBucketItem={likeBucketItem}
               />
             </div>
           );
@@ -56,6 +57,28 @@ export default function Events() {
         fetchBucketItems();
         };
 
+        const likeBucketItem = async (bucketId: string, userId: string) => {
+            const bucketItem = bucketItems.find((item) => item.id === bucketId);
+            if (userId !== "00000000000000000000000000000000") {
+              if (bucketItem) {
+                if (bucketItem.likedBy.includes(userId)) {
+                  bucketItem.likedBy = bucketItem.likedBy.filter((item) => item !== userId);
+                  bucketItem.likes = bucketItem.likes - 1;
+                }
+                else {
+                  bucketItem.likedBy.push(userId);
+                  bucketItem.likes = bucketItem.likes + 1;
+                }
+                await updateIdInCloudFireStore(
+                  "bucketItems",
+                  bucketItem,
+                  bucketItem.id
+                );
+                fetchBucketItems();
+              }
+            }
+          }
+
     function newBucketItem() {
         return <div className="bucket_item_container"><BucketItemComponent
         updateBucketItem={updateBucketItem} 
@@ -66,7 +89,9 @@ export default function Events() {
             date=''
             cost=''
             likes={0}
-            likedBy={[]}/></div>
+            likedBy={[]}
+            createdBy=''/>
+            </div>
     }
 
 return(
