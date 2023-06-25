@@ -5,6 +5,7 @@ import { writeToCloudFireStore, readFromCloudFireStore, updateIdInCloudFireStore
 import { BucketItem, User } from "@/interfaces/schema";
 import { BucketItemComponent } from "@/components/bucketItem";
 import React, {useEffect} from "react";
+import NewBucketItem from "@/components/newBucketItem"; 
 
 export default function Events() {
 
@@ -107,6 +108,7 @@ return(
     <div className = "bucket_item_box" >
     {dispBucketItems()}
     {newBucketItem()}
+    <NewBucketItem/>
     </div> 
     
     
