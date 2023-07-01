@@ -6,6 +6,8 @@ import { BucketItem, User } from "@/interfaces/schema";
 import { BucketItemComponent } from "@/components/bucketItem";
 import React, {useEffect} from "react";
 import NewBucketItem from "@/components/newBucketItem"; 
+import Header from "@/components/header";
+import { isLoggedIn } from "@/utilities/login";
 
 export default function Events() {
 
@@ -38,11 +40,6 @@ export default function Events() {
           );
         });
       };
-
-      const insertNewBucketItem = async (newItem: BucketItem) => {
-        await writeToCloudFireStore("bucketItems", newItem, newItem.id);
-        fetchBucketItems();
-        };
 
       const updateBucketItem = async (updatedItem: BucketItem) => {
         await updateIdInCloudFireStore(
@@ -80,35 +77,23 @@ export default function Events() {
             }
           }
 
-    function newBucketItem() {
-        return <div className="bucket_item_container"><BucketItemComponent
-        updateBucketItem={updateBucketItem} 
-        insertNewBucketItem={insertNewBucketItem}
-            id="new" 
-            name="New Bucket Item" 
-            description="This is a new bucket item" 
-            date=''
-            cost=''
-            likes={0}
-            likedBy={[]}
-            createdBy=''/>
-            </div>
-    }
+      const fetchBucketItemsAfterSubmission = async () => {
+        await fetchBucketItems();
+      };
 
 return(
-<div className="">
-    <h1>
-        Hello World!
-    </h1>
+<div>
 
+    <div>
+        <Header/>
+    </div>
     <div>
         <button onClick={() => readFromCloudFireStore("bucketItems")}>Read from Cloud Firestore</button>
     </div>
 
     <div className = "bucket_item_box" >
     {dispBucketItems()}
-    {newBucketItem()}
-    <NewBucketItem/>
+    {isLoggedIn() && <NewBucketItem fetchBucketItemsAfterSubmission={fetchBucketItemsAfterSubmission}/>}
     </div> 
     
     

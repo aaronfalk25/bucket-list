@@ -6,7 +6,6 @@ import { who } from "src/utilities/queries";
 
 import "src/app/global.css";
 import {
-  writeToCloudFireStore,
   updateIdInCloudFireStore,
   deleteFromCloudFireStore,
   readFromCloudFireStore,
@@ -15,7 +14,6 @@ import {
 interface Props extends BucketItem {
     updateBucketItem: (updatedItem: BucketItem) => Promise<void>;
     deleteBucketItem?: (id: string) => void;
-    insertNewBucketItem?: (newItem: BucketItem) => Promise<void>;
     likeBucketItem?: (bucketId: string, userId: string) => Promise<void>;
   }
 
@@ -94,32 +92,6 @@ export class BucketItemComponent extends React.Component<Props, State> {
   deleteBucketItem = async () => {
     if (this.props.deleteBucketItem) await this.props.deleteBucketItem(this.props.id);
   };
-
-  insertNewBucketItem = async () => {
-    const user = await who();
-    const userid = user.uid;
-    const today: Date = new Date();
-    const formattedToday = today.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "numeric",
-    });
-    if (this.props.insertNewBucketItem) await this.props.insertNewBucketItem({
-        id: uuidv4(),
-        name: this.state.editedName,
-        description: this.state.editedDescription,
-        date: this.state.editedDate ? this.state.editedDate : formattedToday,
-        time: this.state.editedTime,
-        cost: this.state.editedCost,
-        numParticipants: this.state.editedNumParticipants,
-        participants: [],
-        likes: 0,
-        likedBy: [],
-        createdBy: userid
-    });
-
-    this.resetNewBucketItem();
-};
 
 resetNewBucketItem = () => {
     this.setState({
@@ -277,19 +249,19 @@ resetNewBucketItem = () => {
             <div>
               <div className="bucket_item_icons_container">
                 <div className="bucket_item_icons_container_inner"> 
+                { userId === this.props.createdBy &&
+                  <>
                   <button onClick={this.handleEdit}><PencilIcon /></button>
                   <div className="spacer"/>
-                  {this.props.id === 'new' 
-                    ? <button onClick={this.insertNewBucketItem}><PlusIcon/></button> 
-                    : <button onClick={this.deleteBucketItem}><TrashIcon/></button>}
+                  <button onClick={this.deleteBucketItem}><TrashIcon/></button>
+                  </>
+                }
                 </div>
                 <div> 
                   {
-                  this.props.id !== 'new'
-                  ? userId && this.props.likedBy.includes(userId)
+                  userId && this.props.likedBy.includes(userId)
                     ? <button className="hide-button-border heart-icon-liked" onClick={this.handleLike}><HeartIcon/> </button>
                     : <button className="hide-button-border heart-icon" onClick={this.handleLike}> <HeartIcon/> </button>
-                  : <div></div>
                   }
                 
                 {this.props.id !== 'new' ? this.props.likes : <div></div>}

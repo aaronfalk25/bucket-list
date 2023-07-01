@@ -17,6 +17,7 @@ export interface BucketItem {
     cost?: string;
     numParticipants?: number;
     participants?: string[];
+    location?: string;
     likes: number;
     likedBy: string[];
     createdBy: string;

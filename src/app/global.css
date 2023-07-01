@@ -166,7 +166,7 @@ html, body {
   }
 
   .heart-icon:hover svg {
-    fill: red;
+    fill: rgba(255, 0, 0, 0.5);
   }
 
   .heart-icon-liked svg {
@@ -174,7 +174,7 @@ html, body {
   }
 
   .heart-icon-liked:hover svg {
-    fill: white;
+    fill: rgba(255, 0, 0, 0.5);
   }
 
   .pop-up {
@@ -186,6 +186,7 @@ html, body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     padding: 20px;
     z-index: 9999;
+    width: 40%;
   }
 
   .backdrop {
@@ -199,3 +200,90 @@ html, body {
     z-index: 9998;
   }
   
+
+  .hover-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hover-sheen::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .hover-sheen:hover::before {
+    opacity: 1;
+    animation: hover-sheen-animation 2s infinite;
+  }
+  
+  @keyframes hover-sheen-animation {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .plus-icon {
+    width: 100%;
+    height: 100%;
+    border: 1px solid black !important;
+  }
+
+  .new-bucket-item-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .form-action-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #193fd7;
+    padding: 10px;
+    z-index: 999;
+  }
+  
+  .header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #a3a2a2;
+  }
+  
+  .header p {
+    margin: 0;
+    font-size: 14px;
+    color: #fcf9f9;
+  }
