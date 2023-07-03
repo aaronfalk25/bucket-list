@@ -105,6 +105,7 @@ const NewBucketItem: React.FC<NewBucketItemProps> = ({fetchBucketItemsAfterSubmi
       {showModal ? (
         <div>
         <div className="pop-up">
+          <h1>Add a New Event</h1>
           <div className="form-container">
             <form onSubmit={handleSubmit} className="new-bucket-item-form">
               <label htmlFor="name">Name of Activity:</label>

@@ -1,34 +1,29 @@
-* Reset default browser styles */
 html, body {
     margin: 0;
     padding: 0;
   }
-  
-  /* Apply a basic box-sizing rule */
+
   * {
     box-sizing: border-box;
   }
   
-  /* Set a default font family and size */
   body {
     font-family: Arial, sans-serif;
     font-size: 16px;
   }
   
-  /* Add some basic styles to the heading */
+
   h1, h2, h3, h4, h5, h6 {
     margin: 0;
     font-weight: bold;
   }
   
-  /* Add some spacing between elements */
   p, ul, ol {
     margin: 0;
     padding: 0;
     margin-bottom: 1em;
   }
-  
-  /* Style links */
+
   a {
     color: #000;
     text-decoration: none;
@@ -38,21 +33,18 @@ html, body {
     text-decoration: underline;
   }
   
-  /* Set a basic layout */
   .container {
     max-width: 960px;
     margin: 0 auto;
     padding: 20px;
   }
   
-  /* Add a responsive layout */
   @media (max-width: 768px) {
     .container {
       padding: 10px;
     }
   }
 
-  /* Button styles */
 .button {
     display: inline-block;
     padding: 10px 20px;
@@ -153,11 +145,13 @@ html, body {
   }
 
   .icon {
+    cursor: pointer;
     width: 1.5rem;
     height: 1.5rem;
   }
 
   .hide-button-border {
+    cursor: pointer;
     border: none;
     background: none;
     padding: 0;
@@ -185,8 +179,8 @@ html, body {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     padding: 20px;
+    text-align: center;
     z-index: 9999;
-    width: 40%;
   }
 
   .backdrop {
@@ -256,7 +250,8 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 60%;
+    margin: 0 auto;
   }
 
   .form-action-buttons {
@@ -287,3 +282,67 @@ html, body {
     font-size: 14px;
     color: #fcf9f9;
   }
+
+  .smile-icon:hover svg {
+    fill: rgba(255, 255, 0, 0.5);
+  }
+
+  .smile-icon-pressed svg {
+    fill: yellow;
+  }
+
+  .smile-icon-pressed:hover svg {
+    fill: rgba(255, 255, 0, 0.5);
+  }
+
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip-text {
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    width: max-content;
+  }
+  
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .participants-container {
+    position: relative;
+    display: inline-block;
+  }
+
+ .participants-window {
+  position: absolute;
+  z-index: 1;
+  transform: translateX(50%) translateY(-50%);
+  border: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  background-color: yellow;
+  margin: 8px;
+  padding: 8px;
+  width: max-content;
+  border-radius: 8px;
+}
+
+.participants-window h3 {
+  color: white;
+  background-color: #4169e1;
+  text-align: center;
+}

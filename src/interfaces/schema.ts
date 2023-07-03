@@ -16,7 +16,7 @@ export interface BucketItem {
     time?: string;
     cost?: string;
     numParticipants?: number;
-    participants?: string[];
+    participants: string[];
     location?: string;
     likes: number;
     likedBy: string[];

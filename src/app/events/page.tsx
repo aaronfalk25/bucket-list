@@ -6,7 +6,7 @@ import { BucketItem, User } from "@/interfaces/schema";
 import { BucketItemComponent } from "@/components/bucketItem";
 import React, {useEffect} from "react";
 import NewBucketItem from "@/components/newBucketItem"; 
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import { isLoggedIn } from "@/utilities/login";
 
 export default function Events() {
@@ -35,6 +35,7 @@ export default function Events() {
                 updateBucketItem={updateBucketItem}
                 deleteBucketItem={deleteBucketItem}
                 likeBucketItem={likeBucketItem}
+                addParticipant={addParticipant}
               />
             </div>
           );
@@ -57,7 +58,7 @@ export default function Events() {
 
         const likeBucketItem = async (bucketId: string, userId: string) => {
             const bucketItem = bucketItems.find((item) => item.id === bucketId);
-            if (userId !== "00000000000000000000000000000000") {
+            if (userId !== "") {
               if (bucketItem) {
                 if (bucketItem.likedBy.includes(userId)) {
                   bucketItem.likedBy = bucketItem.likedBy.filter((item) => item !== userId);
@@ -77,6 +78,26 @@ export default function Events() {
             }
           }
 
+          const addParticipant = async (bucketId: string, userId: string) => {
+            const bucketItem = bucketItems.find((item) => item.id === bucketId);
+            if (userId !== "") {
+              if (bucketItem) {
+                if (bucketItem.participants.includes(userId)) {
+                  bucketItem.participants = bucketItem.participants.filter((item) => item !== userId);
+                }
+                else {
+                  bucketItem.participants.push(userId);
+                }
+                await updateIdInCloudFireStore(
+                  "bucketItems",
+                  bucketItem,
+                  bucketItem.id
+                );
+                fetchBucketItems();
+              }
+            }
+          }
+
       const fetchBucketItemsAfterSubmission = async () => {
         await fetchBucketItems();
       };
@@ -84,9 +105,7 @@ export default function Events() {
 return(
 <div>
 
-    <div>
-        <Header/>
-    </div>
+    <Header/>
     <div>
         <button onClick={() => readFromCloudFireStore("bucketItems")}>Read from Cloud Firestore</button>
     </div>

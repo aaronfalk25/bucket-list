@@ -1,8 +1,10 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
 import { BucketItem } from "src/interfaces/schema";
 import { v4 as uuidv4 } from "uuid";
-import {PencilIcon, TrashIcon, PlusIcon, HeartIcon, UndoIcon, SaveIcon } from "@/components/icons";
-import { who } from "src/utilities/queries";
+import {PencilIcon, TrashIcon, PlusIcon, HeartIcon, UndoIcon, SaveIcon, SadIcon, SmileIcon, ViewParticipantsIcon } from "@/components/icons";
+import { who, getUserById } from "src/utilities/queries";
+import Tooltip from "./Tooltip";
+import ParticipantsWindow from "./ParticipantsWindow";
 
 import "src/app/global.css";
 import {
@@ -13,8 +15,9 @@ import {
 
 interface Props extends BucketItem {
     updateBucketItem: (updatedItem: BucketItem) => Promise<void>;
-    deleteBucketItem?: (id: string) => void;
-    likeBucketItem?: (bucketId: string, userId: string) => Promise<void>;
+    deleteBucketItem: (id: string) => void;
+    likeBucketItem: (bucketId: string, userId: string) => Promise<void>;
+    addParticipant: (bucketItem: string, userId: string) => Promise<void>;
   }
 
 interface State {
@@ -24,6 +27,7 @@ interface State {
     editedDate: string;
     editedTime: string;
     editedCost: string;
+    editedLocation: string;
     editedNumParticipants: number;
     userId: string | null;
 }
@@ -39,6 +43,7 @@ export class BucketItemComponent extends React.Component<Props, State> {
       editedTime: props.time? props.time : "",
       editedCost: props.cost? props.cost : "",
       editedNumParticipants: props.numParticipants? props.numParticipants : 0,
+      editedLocation: props.location? props.location : "",
       userId: null
     };
     this.resetNewBucketItem = this.resetNewBucketItem.bind(this);
@@ -72,21 +77,19 @@ export class BucketItemComponent extends React.Component<Props, State> {
       this.props.id
     );
 
-    if (this.props.id !== 'new') { 
-        await this.props.updateBucketItem({
-            id: this.props.id,
-            name: editedName,
-            description: editedDescription,
-            date: editedDate,
-            time: editedTime,
-            numParticipants: editedNumParticipants,
-            participants: [],
-            cost: editedCost,
-            likes: 0,
-            likedBy: [],
-            createdBy: this.props.createdBy? this.props.createdBy : ""
-        });
-    }
+      await this.props.updateBucketItem({
+          id: this.props.id,
+          name: editedName,
+          description: editedDescription,
+          date: editedDate,
+          time: editedTime,
+          numParticipants: editedNumParticipants,
+          participants: [],
+          cost: editedCost,
+          likes: 0,
+          likedBy: [],
+          createdBy: this.props.createdBy? this.props.createdBy : ""
+      });
   };
 
   deleteBucketItem = async () => {
@@ -117,6 +120,7 @@ resetNewBucketItem = () => {
             editedDate: this.props.date? this.props.date : "",
             editedTime: this.props.time? this.props.time : "",
             editedCost: this.props.cost? this.props.cost : "",
+            editedLocation: this.props.location? this.props.location : ""
         });
         break;
       }
@@ -132,7 +136,7 @@ resetNewBucketItem = () => {
   };
 
   handleCancel = () => {
-    const { name, description, date, time, cost } = this.props;
+    const { name, description, date, time, cost, location } = this.props;
     this.setState({
         isEditing: false,
         editedName: name,
@@ -140,6 +144,7 @@ resetNewBucketItem = () => {
         editedDate: date? date : "",
         editedTime: time? time : "",
         editedCost: cost? cost : "",
+        editedLocation: location? location : ""
     });
   };
 
@@ -163,14 +168,11 @@ resetNewBucketItem = () => {
     this.setState({ editedCost: e.target.value });
   };
 
-  handleKeyPress = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      this.handleSave();
-    }
+  handleLocationChange = (e: ChangeEvent<HTMLInputElement>) => {
+    this.setState({ editedLocation: e.target.value });
   };
 
-  handleKeyPressTextArea = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  handleKeyPress = (e: React.KeyboardEvent<HTMLElement | HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       this.handleSave();
@@ -183,6 +185,12 @@ resetNewBucketItem = () => {
     if (this.props.likeBucketItem) this.props.likeBucketItem(this.props.id ,userid);
   };
 
+  handleAddParticipant = async () => {
+    const user = await who();
+    const userid = user.uid;
+    if (this.props.addParticipant) this.props.addParticipant(this.props.id ,userid);
+  };
+
   render() {
     const { isEditing, editedName, editedDescription, editedDate, editedTime, editedCost, userId } = this.state;
 
@@ -192,9 +200,13 @@ resetNewBucketItem = () => {
             <div>
               <div className="bucket_item_icons_container">
                 <div className="bucket_item_icons_container_inner">
+                  <Tooltip message="Save">
                   <button onClick={this.handleSave}><SaveIcon/></button>
+                  </Tooltip>
                   <div className="spacer"/>
+                  <Tooltip message="Cancel Changes">
                   <button onClick={this.handleCancel}><UndoIcon/></button>
+                  </Tooltip>
                 </div>
                 <div className="spacer"/>
               </div>
@@ -212,7 +224,7 @@ resetNewBucketItem = () => {
                   value={editedDescription}
                   placeholder="Description"
                   onChange={this.handleDescriptionChange}
-                  onKeyPress={this.handleKeyPressTextArea}
+                  onKeyPress={this.handleKeyPress}
                 />
               </div>
               <div className="bucket_item_container_inner_box">
@@ -251,21 +263,37 @@ resetNewBucketItem = () => {
                 <div className="bucket_item_icons_container_inner"> 
                 { userId === this.props.createdBy &&
                   <>
-                  <button onClick={this.handleEdit}><PencilIcon /></button>
+                  <Tooltip message="Edit"><button onClick={this.handleEdit}><PencilIcon /></button></Tooltip>
                   <div className="spacer"/>
-                  <button onClick={this.deleteBucketItem}><TrashIcon/></button>
+                  <Tooltip message="Delete"><button onClick={this.deleteBucketItem}><TrashIcon/></button></Tooltip>
                   </>
                 }
                 </div>
-                <div> 
-                  {
-                  userId && this.props.likedBy.includes(userId)
-                    ? <button className="hide-button-border heart-icon-liked" onClick={this.handleLike}><HeartIcon/> </button>
-                    : <button className="hide-button-border heart-icon" onClick={this.handleLike}> <HeartIcon/> </button>
-                  }
-                
-                {this.props.id !== 'new' ? this.props.likes : <div></div>}
+              <div>
+                <div className="bucket_item_icons_container_inner">
+                    <div> 
+                      {
+                      userId && this.props.likedBy.includes(userId)
+                        ? <Tooltip message="Unlike"><button className="hide-button-border heart-icon-liked" onClick={this.handleLike}><HeartIcon/> </button></Tooltip>
+                        : <Tooltip message="Like"><button className="hide-button-border heart-icon" onClick={this.handleLike}> <HeartIcon/> </button></Tooltip>
+                      }
+                    </div>
+                    <div>
+                      {
+                      userId && this.props.participants.includes(userId)
+                        ? <Tooltip message="I can't make it"><button className="hide-button-border smile-icon-pressed" onClick={this.handleAddParticipant}><SmileIcon/> </button></Tooltip>
+                        : <Tooltip message="I'll be there!"><button className="hide-button-border smile-icon" onClick={this.handleAddParticipant}> <SmileIcon/> </button></Tooltip>
+                      }
+                      </div>
                 </div>
+                <div className="bucket_item_icons_container_inner">
+                  <Tooltip message="View Participants"><ParticipantsWindow participants={this.props.participants}/></Tooltip>
+                </div>
+
+                <div>
+                  {}
+                </div>
+              </div>
               </div>
               <h3>{editedName}</h3>
               <p>{editedDescription}</p>

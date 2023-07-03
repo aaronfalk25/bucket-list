@@ -1,7 +1,7 @@
 import {auth, provider} from 'src/api/firebase/firebase';
 import {signInWithPopup} from "firebase/auth";
 import { User } from 'src/interfaces/schema';
-import { writeToCloudFireStore  } from 'src/api/firebase/firebase';
+import { writeToCloudFireStore } from 'src/api/firebase/firebase';
 import { signOut } from 'firebase/auth';
 import {who} from 'src/utilities/queries';
 
@@ -20,13 +20,13 @@ export async function SignIn() {
     }
 
     // Write user object to firestore (user storage)
-    writeToCloudFireStore('users', user, user.uid);
+    await writeToCloudFireStore('users', user, user.uid);
 }
 
 export async function SignOut() {
     const whoUser = await who();
 
-    if (whoUser.uid === "00000000000000000000000000000000") {
+    if (whoUser.uid === "") {
       throw new Error("User not found");
     }
 
@@ -40,7 +40,7 @@ export async function SignOut() {
         isSignedIn: false
     }
     if (user.uid !== '') {
-        writeToCloudFireStore('users', user, user.uid);
+      await writeToCloudFireStore('users', user, user.uid);
     }
 
     signOut(auth)

@@ -40,6 +40,7 @@ export default function Home() {
 
   const loginButtonTitle = userLoggedIn ? 'Sign Out' : 'Sign In'
   const additionalText = userLoggedIn && user?.displayName ? `Currently logged in as ${user?.displayName}` : ''
+  userLoggedIn && router.push('/events');
 
   return (
     <div>

@@ -1,14 +1,10 @@
-// Header that is displayed on every page
-// Contains sign in/ sign out button
-
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 import { SignIn, SignOut, isLoggedIn } from "@/utilities/login";
 import { who } from "src/utilities/queries";
 import { User } from "src/interfaces/schema";
 
 export default function Header() {
-    const [userLoggedIn, setUserLoggedIn] = useState(isLoggedIn());
+    const [userLoggedIn, setUserLoggedIn] = useState<Boolean>(isLoggedIn());
     const [user, setUser] = useState(
         {
         uid: "",
@@ -18,16 +14,21 @@ export default function Header() {
     );
     
     const doLogin = async () => {
-        userLoggedIn ? SignOut() : SignIn();
+        userLoggedIn ? await SignOut() : await SignIn();
         setUserLoggedIn(!userLoggedIn);
         setUser(await who());
+        window.location.reload();
     };
+
+    useEffect(() => {
+        const fetchWhoUser = async () => {
+            const user = await who();
+            setUser(user);
+            setUserLoggedIn(user.isSignedIn ?? false);
+        };
+        fetchWhoUser();
+    }, []);
     
-    // const handleButtonClick = () => {
-    //     router.push("/events");
-    // };
-    
-    const loginButtonTitle = userLoggedIn ? "Sign Out" : "Sign In";
     const additionalText =
         userLoggedIn && user?.displayName
         ? `Currently logged in as ${user?.displayName}`
@@ -39,7 +40,7 @@ export default function Header() {
             
             <div>
                 <button className="button" onClick={doLogin}>
-                {loginButtonTitle}
+                {userLoggedIn ? "Sign Out" : "Sign In"}
                 </button>
                 <p> {additionalText} </p>
             </div>

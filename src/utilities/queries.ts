@@ -10,7 +10,7 @@ export async function who(): Promise<User> {
   const userid: string | undefined = auth.currentUser?.uid;
 
   let user: User = {
-    uid: "00000000000000000000000000000000",
+    uid: "",
     darkMode: false,
     isSignedIn: false
   };
@@ -18,10 +18,28 @@ export async function who(): Promise<User> {
   if (userid !== undefined) {
   
     for (const usr of users.documents) {
-        if (usr.uid === userid) {
+        if (usr.uid === userid && usr.isSignedIn) {
           user = usr as unknown as User;
         }
     }
+  }
+
+  return user;
+}
+
+export async function getUserById(uid: string): Promise<User> {
+  const users: Collection = await readFromCloudFireStore('users');
+
+  let user: User = {
+    uid: "",
+    darkMode: false,
+    isSignedIn: false
+  };
+
+  for (const usr of users.documents) {
+      if (usr.uid === uid) {
+        user = usr as unknown as User;
+      }
   }
 
   return user;
