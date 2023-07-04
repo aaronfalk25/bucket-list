@@ -5,6 +5,7 @@ import {PencilIcon, TrashIcon, PlusIcon, HeartIcon, UndoIcon, SaveIcon, SadIcon,
 import { who, getUserById } from "src/utilities/queries";
 import Tooltip from "./Tooltip";
 import ParticipantsWindow from "./ParticipantsWindow";
+import Tag from "./Tag";
 
 import "src/app/global.css";
 import {
@@ -192,7 +193,7 @@ resetNewBucketItem = () => {
   };
 
   render() {
-    const { isEditing, editedName, editedDescription, editedDate, editedTime, editedCost, userId } = this.state;
+    const { isEditing, editedName, editedDescription, editedDate, editedTime, editedCost, editedLocation, userId } = this.state;
 
     return (
         <div>
@@ -208,8 +209,8 @@ resetNewBucketItem = () => {
                   <button onClick={this.handleCancel}><UndoIcon/></button>
                   </Tooltip>
                 </div>
-                <div className="spacer"/>
               </div>
+              <br></br>
               <div>
                 <input
                   type="text"
@@ -228,25 +229,24 @@ resetNewBucketItem = () => {
                 />
               </div>
               <div className="bucket_item_container_inner_box">
-              <div> Date: &nbsp;
+              <div className="bucket-info-box">
+              <div className="bucket-info-box-text"> <Tag>Date</Tag>
                 <input
-                  type="text"
-                  placeholder="Date"
+                  type="date"
                   value={editedDate}
                   onChange={this.handleDateChange}
                   onKeyPress={this.handleKeyPress}
                 />
               </div>
-              <div> Time: &nbsp;
+              <div className="bucket-info-box-text"> <Tag>Time</Tag>
                 <input
-                  type="text"
-                  placeholder="Time"
+                  type="time"
                   value={editedTime}
                   onChange={this.handleTimeChange}
                   onKeyPress={this.handleKeyPress}
                 />
               </div>
-              <div> Cost: &nbsp;
+              <div className="bucket-info-box-text"> <Tag>Cost</Tag>
                 <input
                   type="text"
                   placeholder="Cost $$$"
@@ -255,7 +255,17 @@ resetNewBucketItem = () => {
                   onKeyPress={this.handleKeyPress}
                 />
               </div>
+              <div className="bucket-info-box-text"> <Tag>Location</Tag>
+                <input
+                  type="text"
+                  placeholder="Location"
+                  value={editedLocation}
+                  onChange={this.handleCostChange}
+                  onKeyPress={this.handleKeyPress}
+                />
               </div>
+              </div>
+            </div>
             </div>
           ) : (
             <div>
@@ -270,14 +280,17 @@ resetNewBucketItem = () => {
                 }
                 </div>
               <div>
-                <div className="bucket_item_icons_container_inner">
-                    <div> 
+                  <div className="like-container">
+                    <div className="like-container-icon"> 
                       {
                       userId && this.props.likedBy.includes(userId)
                         ? <Tooltip message="Unlike"><button className="hide-button-border heart-icon-liked" onClick={this.handleLike}><HeartIcon/> </button></Tooltip>
                         : <Tooltip message="Like"><button className="hide-button-border heart-icon" onClick={this.handleLike}> <HeartIcon/> </button></Tooltip>
                       }
                     </div>
+                    <p className="like-container-text">{this.props.likes}</p>
+                </div>
+                <div className="bucket_item_icons_container_inner">
                     <div>
                       {
                       userId && this.props.participants.includes(userId)
@@ -285,8 +298,6 @@ resetNewBucketItem = () => {
                         : <Tooltip message="I'll be there!"><button className="hide-button-border smile-icon" onClick={this.handleAddParticipant}> <SmileIcon/> </button></Tooltip>
                       }
                       </div>
-                </div>
-                <div className="bucket_item_icons_container_inner">
                   <Tooltip message="View Participants"><ParticipantsWindow participants={this.props.participants}/></Tooltip>
                 </div>
 
@@ -295,12 +306,15 @@ resetNewBucketItem = () => {
                 </div>
               </div>
               </div>
-              <h3>{editedName}</h3>
+              <h1>{editedName}</h1>
               <p>{editedDescription}</p>
               <div className="bucket_item_container_inner_box">
-                <div>{editedDate}</div>
-                <div>{editedTime}</div>
-                <div>{editedCost}</div>
+                <div className="bucket-info-box"> 
+                <div className="bucket-info-box-text"><Tag>Date</Tag> {editedDate}</div>
+                <div className="bucket-info-box-text"><Tag>Time</Tag>{editedTime}</div>
+                <div className="bucket-info-box-text"><Tag>Cost</Tag>{editedCost}</div>
+                <div className="bucket-info-box-text"><Tag>Location</Tag>{editedLocation}</div>
+                </div> 
               </div>
             </div>
           )}

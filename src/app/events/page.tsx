@@ -106,11 +106,9 @@ return(
 <div>
 
     <Header/>
-    <div>
-        <button onClick={() => readFromCloudFireStore("bucketItems")}>Read from Cloud Firestore</button>
-    </div>
-
+    <br></br>
     <div className = "bucket_item_box" >
+    {isLoggedIn() && <NewBucketItem fetchBucketItemsAfterSubmission={fetchBucketItemsAfterSubmission}/>}
     {dispBucketItems()}
     {isLoggedIn() && <NewBucketItem fetchBucketItemsAfterSubmission={fetchBucketItemsAfterSubmission}/>}
     </div> 

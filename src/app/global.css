@@ -268,6 +268,7 @@ html, body {
     background-color: #193fd7;
     padding: 10px;
     z-index: 999;
+    border-bottom: 5px solid black;
   }
   
   .header h1 {
@@ -345,4 +346,63 @@ html, body {
   color: white;
   background-color: #4169e1;
   text-align: center;
+}
+
+.bucket-info-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: cyan;
+  width: 90%;
+  padding: 20px;
+}
+
+.bucket-info-box-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding-top: 20px;
+  width: 90%;
+  border: 1px solid black;
+  z-index: 1;
+  height: 60px;
+}
+
+.tag {
+  background-color: darkblue;
+  color: white;
+  text-transform: uppercase;
+  font-size: 10px;
+  padding: 5px;
+  border-radius: 4px;
+  margin: 5px;
+  position: absolute;
+  transform: translate(-70px, -35px);
+  text-shadow: 0 0 5px #4169e1,
+              0 0 10px #4169e1,
+              0 0 20px #4169e1,
+              0 0 30px #4169e1;
+}
+
+.like-container {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  border: 1px solid black;
+  border-radius: 4px;
+  width: 90%;
+  transform: translate(20px, -10px);
+}
+
+.like-container-text {
+  margin: 10px;
+}
+
+.like-container-icon {
+  margin-left: 4px;
 }
