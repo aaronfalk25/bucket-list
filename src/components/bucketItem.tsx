@@ -60,7 +60,7 @@ export class BucketItemComponent extends React.Component<Props, State> {
   };
 
   editBucketItem = async () => {
-    const { editedName, editedDescription, editedDate, editedTime, editedCost, editedNumParticipants } = this.state;
+    const { editedName, editedDescription, editedDate, editedTime, editedCost, editedLocation, editedNumParticipants } = this.state;
     await updateIdInCloudFireStore(
       "bucketItems",
       {
@@ -69,6 +69,7 @@ export class BucketItemComponent extends React.Component<Props, State> {
         date: this.props.date? this.props.date : "",
         time: this.props.time? this.props.time : "",
         cost: this.props.cost? this.props.cost : "",
+        location: this.props.location? this.props.location : "",
         numParticipants: this.props.numParticipants? this.props.numParticipants : 0,
         participants: [],
         likes: 0,
@@ -87,6 +88,7 @@ export class BucketItemComponent extends React.Component<Props, State> {
           numParticipants: editedNumParticipants,
           participants: [],
           cost: editedCost,
+          location: editedLocation,
           likes: 0,
           likedBy: [],
           createdBy: this.props.createdBy? this.props.createdBy : ""
@@ -260,7 +262,7 @@ resetNewBucketItem = () => {
                   type="text"
                   placeholder="Location"
                   value={editedLocation}
-                  onChange={this.handleCostChange}
+                  onChange={this.handleLocationChange}
                   onKeyPress={this.handleKeyPress}
                 />
               </div>

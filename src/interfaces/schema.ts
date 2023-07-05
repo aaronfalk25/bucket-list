@@ -22,3 +22,11 @@ export interface BucketItem {
     likedBy: string[];
     createdBy: string;
 }
+
+export interface Group {
+    id: string;
+    name: string;
+    description: string;
+    members: string[];
+    createdBy: string;
+}

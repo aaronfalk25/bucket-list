@@ -108,7 +108,7 @@ return(
     <Header/>
     <br></br>
     <div className = "bucket_item_box" >
-    {isLoggedIn() && <NewBucketItem fetchBucketItemsAfterSubmission={fetchBucketItemsAfterSubmission}/>}
+    {isLoggedIn() && bucketItems.length > 1 && <NewBucketItem fetchBucketItemsAfterSubmission={fetchBucketItemsAfterSubmission}/>}
     {dispBucketItems()}
     {isLoggedIn() && <NewBucketItem fetchBucketItemsAfterSubmission={fetchBucketItemsAfterSubmission}/>}
     </div> 
