@@ -31,4 +31,6 @@ export interface Group {
     description: string;
     members: string[];
     createdBy: string;
+    entryCode: string;
+    color: string;
 }

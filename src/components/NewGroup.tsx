@@ -11,6 +11,23 @@ interface NewGroupProps {
   refreshOnGroupCreate: () => Promise<void>;
 }
 
+function generateRandomCode(): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+  
+    for (let i = 0; i < 7; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters[randomIndex];
+    }
+  
+    return code;
+  }
+
+  const generateRandomColor = () => {
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    return randomColor;
+  };
+
 const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -22,7 +39,9 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
       name: formValues.name,
       description: formValues.description??"",
       members: [createdBy],
-      createdBy: createdBy 
+      createdBy: createdBy,
+      entryCode: generateRandomCode(),
+      color: generateRandomColor()
     };
 
     await writeToCloudFireStore("groups", newGroup, newGroup.id);
@@ -44,7 +63,9 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
       name: "",
       description: "",
       members: [],
-      createdBy: ""
+      createdBy: "",
+      entryCode: "",
+      color: ""
     });
   };
   
@@ -64,7 +85,9 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
     name: "",
     description: "",
     members: [],
-    createdBy: ""
+    createdBy: "",
+    entryCode: "",
+    color: ""
   });
 
 

@@ -17,7 +17,7 @@ export default class Group extends React.Component<GroupProps> {
 
     render() {
         return (
-            <div className="group-frame">
+            <div style={{backgroundColor: this.props.color}} className="group-frame">
                 <h3>{this.props.name}</h3>
                 <p>{this.props.description}</p>
                 <button onClick={() => this.props.setUserSelectedGroup(this.props.id)}>Select Group</button>
