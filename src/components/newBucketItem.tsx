@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "src/app/global.css";
 import { PlusIcon } from "./icons";
-import { BucketItem } from "@/interfaces/schema";
+import { BucketItem, User } from "@/interfaces/schema";
 import { writeToCloudFireStore } from "@/api/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 import { who } from "src/utilities/queries";
@@ -15,7 +15,8 @@ const NewBucketItem: React.FC<NewBucketItemProps> = ({fetchBucketItemsAfterSubmi
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+    const user: User = await who();
+
     const newItem: BucketItem = {
       id: uuidv4(),
       name: formValues.name,
@@ -28,7 +29,8 @@ const NewBucketItem: React.FC<NewBucketItemProps> = ({fetchBucketItemsAfterSubmi
       location: formValues.location,
       likes: 0,
       likedBy: [],
-      createdBy: (await who()).uid
+      createdBy: user.uid,
+      groupId: user.userSelectedGroup
     };
 
     await writeToCloudFireStore("bucketItems", newItem, newItem.id);
@@ -57,7 +59,8 @@ const NewBucketItem: React.FC<NewBucketItemProps> = ({fetchBucketItemsAfterSubmi
       location: "",
       likes: 0,
       likedBy: [],
-      createdBy: ""
+      createdBy: "",
+      groupId: ""
     });
   };
   
@@ -84,7 +87,8 @@ const NewBucketItem: React.FC<NewBucketItemProps> = ({fetchBucketItemsAfterSubmi
     location: "",
     likes: 0,
     likedBy: [],
-    createdBy: ""
+    createdBy: "",
+    groupId: ""
   });
 
 

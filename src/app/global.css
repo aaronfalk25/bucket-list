@@ -440,3 +440,15 @@ html, body {
   background-color: white;
   width: 80%;
 }
+
+.group-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  border: 2px solid black;
+  border-radius: 4px;
+  color: white;
+  background-color: darkblue;
+}

@@ -31,6 +31,7 @@ interface State {
     editedLocation: string;
     editedNumParticipants: number;
     userId: string | null;
+    groupId: string;
 }
 
 export class BucketItemComponent extends React.Component<Props, State> {
@@ -45,7 +46,8 @@ export class BucketItemComponent extends React.Component<Props, State> {
       editedCost: props.cost? props.cost : "",
       editedNumParticipants: props.numParticipants? props.numParticipants : 0,
       editedLocation: props.location? props.location : "",
-      userId: null
+      userId: null,
+      groupId: props.groupId? props.groupId : ""
     };
     this.resetNewBucketItem = this.resetNewBucketItem.bind(this);
   }
@@ -74,7 +76,8 @@ export class BucketItemComponent extends React.Component<Props, State> {
         participants: [],
         likes: 0,
         likedBy: [],
-        createdBy: this.props.createdBy? this.props.createdBy : ""
+        createdBy: this.props.createdBy? this.props.createdBy : "",
+        groupId: this.props.groupId? this.props.groupId : ""
       },
       this.props.id
     );
@@ -91,7 +94,8 @@ export class BucketItemComponent extends React.Component<Props, State> {
           location: editedLocation,
           likes: 0,
           likedBy: [],
-          createdBy: this.props.createdBy? this.props.createdBy : ""
+          createdBy: this.props.createdBy? this.props.createdBy : "",
+          groupId: this.props.groupId? this.props.groupId : ""
       });
   };
 

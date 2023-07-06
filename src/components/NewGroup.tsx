@@ -20,7 +20,7 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
     const newGroup: Group = {
       id: uuidv4(),
       name: formValues.name,
-      description: formValues.description,
+      description: formValues.description??"",
       members: [createdBy],
       createdBy: createdBy 
     };
@@ -104,7 +104,6 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
                 name="description"
                 value={formValues.description}
                 onChange={handleInputChange}
-                required
               /><br />            
             <div className="form-action-buttons">
               <button type="submit" className="button">Submit</button>

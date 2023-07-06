@@ -8,11 +8,14 @@ import React, {useEffect} from "react";
 import NewBucketItem from "@/components/newBucketItem"; 
 import Header from "@/components/Header";
 import { isLoggedIn } from "@/utilities/login";
+import { useRouter } from 'next/navigation';
+import { who } from "src/utilities/queries";
 
 export default function Events() {
 
    // Render all bucket items from firestore
     const [bucketItems, setBucketItems] = React.useState<BucketItem[]>([]);
+    const router = useRouter();
     
     useEffect(() => {
         fetchBucketItems();
@@ -24,6 +27,12 @@ export default function Events() {
           (doc) => doc as unknown as BucketItem
         );
         setBucketItems(fetchedBucketItems);
+
+        const user = await who();
+        if (!user.userSelectedGroup) {
+          router.push('/');
+        }
+
       };
     
       const dispBucketItems = () => {

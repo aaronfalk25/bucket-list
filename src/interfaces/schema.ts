@@ -6,6 +6,7 @@ export interface User {
     lastName?: string;
     darkMode: boolean;
     isSignedIn: boolean;
+    userSelectedGroup: string;
 }
 
 export interface BucketItem {
@@ -21,6 +22,7 @@ export interface BucketItem {
     likes: number;
     likedBy: string[];
     createdBy: string;
+    groupId: string;
 }
 
 export interface Group {
