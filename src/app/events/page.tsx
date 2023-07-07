@@ -26,9 +26,12 @@ export default function Events() {
         const fetchedBucketItems = res.documents.map(
           (doc) => doc as unknown as BucketItem
         );
-        setBucketItems(fetchedBucketItems);
-
         const user = await who();
+
+        const groupBucketItems = fetchedBucketItems.filter(bucketItem => bucketItem.groupId === user.userSelectedGroup);
+        setBucketItems(groupBucketItems);
+
+        
         if (!user.userSelectedGroup) {
           router.push('/');
         }

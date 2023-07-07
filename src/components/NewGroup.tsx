@@ -28,11 +28,28 @@ function generateRandomCode(): string {
     return randomColor;
   };
 
+  const getTextColorBasedOnBackground = (backgroundColor: string): string => {
+    const hexColor = backgroundColor.slice(1); // Remove the "#" from the color
+  
+    // Convert hexadecimal color to RGB values
+    const red = parseInt(hexColor.substring(0, 2), 16);
+    const green = parseInt(hexColor.substring(2, 4), 16);
+    const blue = parseInt(hexColor.substring(4, 6), 16);
+  
+    // Calculate relative luminance
+    const luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+  
+    // Determine text color based on luminance
+    return luminance > 0.5 ? 'black' : 'white';
+  };
+
 const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const createdBy = (await who()).uid;
+    const bgColor = generateRandomColor();
+
 
     const newGroup: Group = {
       id: uuidv4(),
@@ -41,7 +58,8 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
       members: [createdBy],
       createdBy: createdBy,
       entryCode: generateRandomCode(),
-      color: generateRandomColor()
+      backgroundColor: bgColor,
+      textColor: getTextColorBasedOnBackground(bgColor)
     };
 
     await writeToCloudFireStore("groups", newGroup, newGroup.id);
@@ -65,7 +83,8 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
       members: [],
       createdBy: "",
       entryCode: "",
-      color: ""
+      backgroundColor: "",
+      textColor: ""
     });
   };
   
@@ -87,7 +106,8 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
     members: [],
     createdBy: "",
     entryCode: "",
-    color: ""
+    backgroundColor: "",
+    textColor: ""
   });
 
 
