@@ -9,7 +9,6 @@ import { User, Group as GroupType, BucketItem } from "src/interfaces/schema";
 import { deleteFromCloudFireStore, readFromCloudFireStore, writeToCloudFireStore } from "@/api/firebase/firebase";
 import NewGroup from "@/components/NewGroup";
 import Group from "@/components/Group";
-import { read } from "fs";
 
 export default function Home() {
   const router = useRouter();
@@ -23,6 +22,7 @@ export default function Home() {
       isSignedIn: false
     } as unknown as User
   );
+  const [groupJoinCode, setGroupJoinCode] = useState<string>("");
 
   const fetchGroups = async () => {
     const res = await readFromCloudFireStore('groups');
@@ -36,6 +36,8 @@ export default function Home() {
     setMyCreatedGroups(myCreatedGroups);
   }
 
+
+  // These two useEffect hooks make it so that the page refreshes when the user logs in or out, and when the page first loads
   useEffect(() => {
     const fetchWhoUser = async () => {
       const user = await who();
@@ -47,7 +49,19 @@ export default function Home() {
 
 
     fetchGroups();
-  }, [userLoggedIn, myCreatedGroups, myGroups]);
+  }, [userLoggedIn]);
+
+  useEffect(() => {
+    const fetchWhoUser = async () => {
+      const user = await who();
+      setUser(user);
+      setUserLoggedIn(user.isSignedIn ?? false);
+    };
+  
+    fetchWhoUser();
+
+    fetchGroups();
+  }, []); 
 
   const doLogin = async () => {
     userLoggedIn ? await SignOut() : await SignIn()
@@ -56,9 +70,6 @@ export default function Home() {
     window.location.reload();
   }
 
-  const handleButtonClick = () => {
-    router.push('/events');
-  };
 
   const setUserSelectedGroup = async (groupId: string) => {
     user.userSelectedGroup = groupId;
@@ -107,6 +118,24 @@ export default function Home() {
     fetchGroups();
 };
 
+const joinGroup = async (entryCode: string) => {
+  const res = await readFromCloudFireStore('groups');
+  const fetchedGroups: GroupType[] = res.documents.map(
+      (doc) => doc as unknown as GroupType
+    );
+
+    try {
+      const groupToJoin = fetchedGroups.filter(group => group.entryCode === entryCode.toUpperCase())[0];
+      groupToJoin.members.push(user.uid); 
+      await writeToCloudFireStore('groups', groupToJoin, groupToJoin.id);
+      await fetchGroups();
+    }
+    catch (error: any) {
+      alert("No group with that code exists.")
+    }
+}
+
+
 
   const loginButtonTitle = userLoggedIn ? 'Sign Out' : 'Sign In'
   return (
@@ -118,15 +147,42 @@ export default function Home() {
 
           {
             userLoggedIn && (
-              <div className='home-page-body'>
-                <div className='home-my-groups-pane'>Groups I am in
-                  {displayMyGroups()}
-                </div>
-                <div className='home-create-group-pane'>Groups I own
-                {displayMyCreatedGroups()}
-                  <NewGroup refreshOnGroupCreate={refreshOnGroupCreate}/>
-                </div>
-              </div>
+                      <div className='home-page-body'>
+                        <div className='home-my-groups-pane'>
+                          
+                          <div className="home-page-header-text">Groups I am in</div>
+
+                          {displayMyGroups()}
+                          
+                          
+                          <div className="join-group-container">
+                            <form onSubmit={(event) => { 
+                              event.preventDefault();
+                              joinGroup(groupJoinCode);
+                            }} 
+                            
+                            className="join-group-form">
+                              <label htmlFor="name">Join group:</label>
+                              <input
+                                type="text"
+                                id="entryCode"
+                                name="entryCode"
+                                value={groupJoinCode}
+                                onChange={(event) => setGroupJoinCode(event.target.value)}
+                                required
+                              />
+                              <button type="submit">Submit</button>
+                            </form>
+                          </div>
+
+
+                        </div>
+                        <div className='home-create-group-pane'>
+                          <div className="home-page-header-text">Groups I own</div>
+                          {displayMyCreatedGroups()}
+                          <NewGroup refreshOnGroupCreate={refreshOnGroupCreate} />
+                        </div>
+                    </div>
             )
           }
 

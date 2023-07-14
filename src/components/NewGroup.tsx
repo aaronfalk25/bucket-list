@@ -113,17 +113,11 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
 
   return (
     <div>
-      <div className="bucket_item_container">
-          <div className="bucket_item_container_inner_box">
-            Create a New Group
-          </div>
-        <div className="bucket_item_container_inner_box hover-sheen">
         <button onClick={() => setShowModal(true)} 
-        className="hide-button-border plus-icon">
-            <PlusIcon/>
+        className="plus-icon">
+            <div className="button-subtext">Add a new group</div> 
+            <div className="button-subtext fix-icon-pos"><PlusIcon/> </div>
         </button>
-        </div>
-      </div>
 
       {showModal ? (
         <div>

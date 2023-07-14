@@ -1,29 +1,66 @@
-import React from 'react'
+import React, {useState} from 'react';
 import { Group as GroupType } from '@/interfaces/schema';
-import "src/app/global.css"
-import { deleteFromCloudFireStore } from '@/api/firebase/firebase';
+import "src/app/global.css";
+import { useRouter } from 'next/navigation';
+import { MagnifyingGlassIcon, ArrowRightIcon, TrashIcon } from './icons';
 
 interface GroupProps extends GroupType {
     setUserSelectedGroup: (group: string) => void;
     deleteGroup?: (group: string) => void;
 }
 
+const Group: React.FC<GroupProps> = (props: GroupProps) => {
+    const { setUserSelectedGroup, deleteGroup, id, backgroundColor, textColor, name, description, entryCode } = props;
+    const router = useRouter();
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [showEntryCode, setShowEntryCode] = useState(false);
 
+    const goToGroup = () => {
+        setUserSelectedGroup(id);
+        router.push('/events');
+    };
 
-export default class Group extends React.Component<GroupProps> {
-    constructor(props: GroupProps) {
-        super(props);
-    }
+    const handleDeleteGroup = () => {
+        if (deleteGroup) {
+            if (isDeleting) {
+                deleteGroup(id);
+            } else {
+                setIsDeleting(true);
+            }
+        }
+    };
 
-    render() {
-        return (
-            <div style={{backgroundColor: this.props.backgroundColor, color: this.props.textColor}} className="group-frame">
-                <h3>{this.props.name}</h3>
-                <p>{this.props.description}</p>
-                <button onClick={() => this.props.setUserSelectedGroup(this.props.id)}>Select Group</button>
-                {this.props.deleteGroup && <button onClick={() => this.props.deleteGroup?.(this.props.id)}>Delete Group</button>}
+    return (
+        <div style={{ backgroundColor, color: textColor }} className="group-frame">
+            <div className="group-text">
+                <h3>{name}</h3>
+                <p>{description}</p>
             </div>
-        )
-    }
+            <div className='group-buttons'>
+                <button onClick={goToGroup}>Go to group page</button>
+                {showEntryCode ? (
+                    <div className="entry-code">
+                        <button onClick={() => setShowEntryCode(false)}>Hide Entry Code</button>
+                        <p>{entryCode}</p>
+                    </div>
+                ) : (
+                    <button onClick={() => setShowEntryCode(true)}>Show Entry Code</button>
+                )}
+                {deleteGroup && (
+                    <>
+                        {isDeleting ? (
+                            <div className="delete-box">
+                                <button onClick={handleDeleteGroup}>Confirm Delete <TrashIcon/></button>
+                                <button onClick={() => setIsDeleting(false)}>Cancel</button>
+                            </div>
+                        ) : (
+                            <button onClick={() => setIsDeleting(true)}>Delete Group</button>
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
+    );
+};
 
-}
+export default Group;
