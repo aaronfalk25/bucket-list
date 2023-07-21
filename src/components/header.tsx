@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { SignIn, SignOut, isLoggedIn } from "@/utilities/login";
 import { who } from "src/utilities/queries";
-import { User } from "src/interfaces/schema";
+import { User, Group } from "src/interfaces/schema";
+import { useRouter } from 'next/navigation';
+import { readFromCloudFireStore } from "@/api/firebase/firebase";
 
 export default function Header() {
+    const router = useRouter();
     const [userLoggedIn, setUserLoggedIn] = useState<Boolean>(isLoggedIn());
     const [user, setUser] = useState(
         {
@@ -12,13 +15,25 @@ export default function Header() {
         isSignedIn: false,
         } as unknown as User
     );
+    const [userGroup, setUserGroup] = useState<string>("");
     
     const doLogin = async () => {
         userLoggedIn ? await SignOut() : await SignIn();
         setUserLoggedIn(!userLoggedIn);
         setUser(await who());
-        window.location.reload();
+        if (userLoggedIn) router.push('/');
     };
+
+    const fetchUserGroup = async () => {
+        if (!user.userSelectedGroup) return;
+
+        const groups = await readFromCloudFireStore('groups');
+        const userGroup = groups.documents.filter((group) => group.id === user.userSelectedGroup)[0] as unknown as Group;
+        console.log(user);
+        console.log(userGroup);
+        setUserGroup(userGroup.name);
+    }
+        
 
     useEffect(() => {
         const fetchWhoUser = async () => {
@@ -28,6 +43,10 @@ export default function Header() {
         };
         fetchWhoUser();
     }, []);
+
+    useEffect(() => {
+        fetchUserGroup();
+    }, [user]);
     
     const additionalText =
         userLoggedIn && user?.displayName
@@ -36,12 +55,18 @@ export default function Header() {
     
     return (
         <div className="header">
-            <h1>Bucket List App</h1>
-            
-            <div>
-                <button className="button" onClick={doLogin}>
-                {userLoggedIn ? "Sign Out" : "Sign In"}
-                </button>
+            <div className="header-row">
+                <h1> {userGroup} Group </h1>
+                
+                <div>
+                    <button className="button" onClick={doLogin}>
+                    {userLoggedIn ? "Sign Out" : "Sign In"}
+                    </button>
+                </div>
+            </div>
+
+            <div className="header-row"> 
+                <button className="button" onClick={() => router.push('/')}>Return Home</button>
                 <p> {additionalText} </p>
             </div>
         </div>

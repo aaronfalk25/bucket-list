@@ -114,7 +114,7 @@ const NewGroup: React.FC<NewGroupProps> = ({refreshOnGroupCreate}) => {
   return (
     <div>
         <button onClick={() => setShowModal(true)} 
-        className="plus-icon">
+        className="button-alt">
             <div className="button-subtext">Add a new group</div> 
             <div className="button-subtext fix-icon-pos"><PlusIcon/> </div>
         </button>

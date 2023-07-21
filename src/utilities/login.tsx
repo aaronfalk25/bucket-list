@@ -16,7 +16,8 @@ export async function SignIn() {
         firstName: auth.currentUser?.displayName ? auth.currentUser?.displayName.split(' ')[0] : '',
         lastName: auth.currentUser?.displayName ? auth.currentUser?.displayName.split(' ')[1] : '',
         darkMode: false,
-        isSignedIn: true
+        isSignedIn: true,
+        userSelectedGroup: ''
     }
 
     // Write user object to firestore (user storage)
@@ -37,7 +38,8 @@ export async function SignOut() {
         firstName: whoUser?.firstName,
         lastName: whoUser?.lastName,
         darkMode: whoUser?.darkMode,
-        isSignedIn: false
+        isSignedIn: false,
+        userSelectedGroup: ''
     }
     if (user.uid !== '') {
       await writeToCloudFireStore('users', user, user.uid);

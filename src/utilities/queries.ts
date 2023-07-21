@@ -12,7 +12,8 @@ export async function who(): Promise<User> {
   let user: User = {
     uid: "",
     darkMode: false,
-    isSignedIn: false
+    isSignedIn: false,
+    userSelectedGroup: ""
   };
 
   if (userid !== undefined) {
@@ -33,7 +34,8 @@ export async function getUserById(uid: string): Promise<User> {
   let user: User = {
     uid: "",
     darkMode: false,
-    isSignedIn: false
+    isSignedIn: false,
+    userSelectedGroup: ""
   };
 
   for (const usr of users.documents) {
