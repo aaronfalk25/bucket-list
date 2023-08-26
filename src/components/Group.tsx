@@ -7,12 +7,14 @@ import { MagnifyingGlassIcon, ArrowRightIcon, TrashIcon } from './icons';
 interface GroupProps extends GroupType {
     setUserSelectedGroup: (group: string) => void;
     deleteGroup?: (group: string) => void;
+    leaveGroup?: (group: string) => void;
 }
 
 const Group: React.FC<GroupProps> = (props: GroupProps) => {
-    const { setUserSelectedGroup, deleteGroup, id, backgroundColor, textColor, name, description, entryCode } = props;
+    const { setUserSelectedGroup, deleteGroup, leaveGroup, id, backgroundColor, textColor, name, description, entryCode } = props;
     const router = useRouter();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isLeaving, setIsLeaving] = useState(false);
     const [showEntryCode, setShowEntryCode] = useState(false);
 
     const goToGroup = () => {
@@ -30,6 +32,19 @@ const Group: React.FC<GroupProps> = (props: GroupProps) => {
         }
     };
 
+    const handleLeaveGroup = () => {
+        console.log("here")
+        if (leaveGroup) {
+            if (isLeaving) {
+                console.log("Leaving group with id", id)
+                leaveGroup(id);
+            }
+            else {
+                setIsLeaving(true);
+            }
+        }
+    };
+
     return (
         <div style={{ backgroundColor, color: textColor }} className="group-frame">
             <div className="group-text">
@@ -39,9 +54,9 @@ const Group: React.FC<GroupProps> = (props: GroupProps) => {
             <div className='group-buttons'>
                 <button onClick={goToGroup}>Go to group page</button>
                 {showEntryCode ? (
-                    <div className="entry-code">
+                    <div>
                         <button onClick={() => setShowEntryCode(false)}>Hide Entry Code</button>
-                        <p>{entryCode}</p>
+                        <div className="entry-code">{entryCode}</div>
                     </div>
                 ) : (
                     <button onClick={() => setShowEntryCode(true)}>Show Entry Code</button>
@@ -56,6 +71,19 @@ const Group: React.FC<GroupProps> = (props: GroupProps) => {
                         ) : (
                             <button onClick={() => setIsDeleting(true)}>Delete Group</button>
                         )}
+                    </>
+                )}
+                {leaveGroup && (
+                    <>
+                        {isLeaving ? (
+                            <div className="leave-box">
+                                <button onClick={handleLeaveGroup}>Confirm Leave</button>
+                                <button onClick={() => setIsLeaving(false)}>Cancel</button>
+                            </div>
+                        ) : (    
+                            <button onClick={() => setIsLeaving(true)}>Leave Group</button>
+                        )
+                        }
                     </>
                 )}
             </div>

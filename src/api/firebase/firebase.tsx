@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { v4 as uuidv4 } from 'uuid';
-import { firebaseConfig } from 'config.json';
+import * as config from 'config.json';
+const firebaseConfig = config.firebaseConfig
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);

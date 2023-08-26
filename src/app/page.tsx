@@ -97,7 +97,12 @@ export default function Home() {
         deleteGroup={() => deleteGroup(group.id)}
         />)}
 
-  const displayMyGroups = () => {return myGroups.map(group => <Group key={group.id} {...group} setUserSelectedGroup={() => setUserSelectedGroup(group.id)} />)}
+  const displayMyGroups = () => {
+      return myGroups.map(group => <Group key={group.id} 
+        {...group} 
+        setUserSelectedGroup={() => setUserSelectedGroup(group.id)} 
+        leaveGroup = {() => leaveGroup(group.id)}
+        />)}
 
   const deleteGroup = async (groupid: string) => {
     if (groupid === user.userSelectedGroup) {
@@ -118,6 +123,26 @@ export default function Home() {
     await deleteFromCloudFireStore("groups", groupid);
     fetchGroups();
 };
+
+const leaveGroup = async (groupid: string) => {
+  if (groupid === user.userSelectedGroup) {
+      user.userSelectedGroup = "";
+      setUser(user); 
+  }
+
+  await writeToCloudFireStore('users', user, user.uid);
+
+  await readFromCloudFireStore('groups').then(res => {
+    const fetchedGroups = res.documents.map(
+      (doc) => doc as unknown as GroupType
+    );
+    const groupToLeave = fetchedGroups.filter(group => group.id === groupid)[0];
+    groupToLeave.members = groupToLeave.members.filter(member => member !== user.uid);
+    writeToCloudFireStore('groups', groupToLeave, groupToLeave.id);
+  });
+
+  fetchGroups();
+}
 
 const joinGroup = async (entryCode: string) => {
   const res = await readFromCloudFireStore('groups');

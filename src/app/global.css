@@ -539,9 +539,49 @@ a:hover {
 }
 
 .entry-code {
-  background-color: white;
   color: black !important;
   align-items: center;
+  display: inline-block;
   font-size: 24px;
   font-weight: bold;
+  position: absolute;
+  top: 100%;
+  left: 40%;
+  opacity: 0;
+  background-color: white;
+  animation: fadeIn 0.5s ease-in-out forwards; /* Apply the fade-in animation */
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.group-buttons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px;
+  border: 2px solid black;
+  border-radius: 4px;
+  padding: 8px;
+  text-align: center;
+}
+
+.group-buttons button {
+  margin: 0 4px;
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.1s, transform 0.1s;
+}
+
+.group-buttons button:hover {
+  cursor: pointer;
+  background-color: #111;
+  transform: scale(1.1);
 }
